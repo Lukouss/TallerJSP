@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Licensee: 
+License Type: Evaluation
+-->
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="orm.Contacto" table="Contacto" lazy="false">
+		<id name="idContacto" column="idContacto" type="integer" unsaved-value="0">
+			<generator class="sequence">
+				<param name="sequence">seq_Contacto</param>
+			</generator>
+		</id>
+		<property name="run" column="run" unique="true" type="string" length="20" not-null="true" lazy="false"/>
+		<property name="nombreContacto" column="nombreContacto" type="string" length="20" not-null="true" lazy="false"/>
+		<property name="apellidoContacto" column="apellidoContacto" unique="true" type="string" length="20" not-null="true" lazy="false"/>
+		<property name="mailContacto" column="mailContacto" unique="true" type="string" length="20" not-null="true" lazy="false"/>
+		<property name="telefonoContacto" column="telefonoContacto" unique="true" type="string" length="20" not-null="true" lazy="false"/>
+		<property name="paisContacto" column="paisContacto" type="string" length="20" not-null="true" lazy="false"/>
+		<property name="regionContacto" column="regionContacto" type="string" length="20" not-null="true" lazy="false"/>
+		<property name="ciudadContacto" column="ciudadContacto" type="string" length="20" not-null="true" lazy="false"/>
+		<property name="direccion" column="direccion" type="string" length="30" not-null="true" lazy="false"/>
+		<property name="img" column="img" type="text" not-null="false" lazy="false"/>
+		<property name="bitacora" column="bitacora" type="string" length="255" not-null="false" lazy="false"/>
+		<many-to-one name="empresaidEmpresa" cascade="lock" column="EmpresaidEmpresa" class="orm.Empresa" not-null="true" lazy="no-proxy" access="field">
+		</many-to-one>
+	</class>
+</hibernate-mapping>

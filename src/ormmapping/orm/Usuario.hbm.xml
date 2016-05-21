@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Licensee: 
+License Type: Evaluation
+-->
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="orm.Usuario" table="Usuario" lazy="false">
+		<id name="idusuario" column="idusuario" type="integer" unsaved-value="0">
+			<generator class="sequence">
+				<param name="sequence">seq_Usuario</param>
+			</generator>
+		</id>
+		<property name="usuario" column="usuario" unique="true" type="string" length="20" not-null="true" lazy="false"/>
+		<property name="password" column="password" type="string" length="20" not-null="true" lazy="false"/>
+	</class>
+</hibernate-mapping>
