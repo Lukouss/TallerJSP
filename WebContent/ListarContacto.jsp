@@ -33,6 +33,7 @@
 					<th>Ciudad</th>
 					<th>Dirección</th>
 					<th>Empresa</th>
+					<th>imgen</th>
 				</thead>
 			</tr>
 			<tbody>
@@ -48,6 +49,7 @@
 						<td>${contacto.ciudad}</td>
 						<td>${contacto.direccion}</td>	
 						<td>${contacto.empresa.nombreEmpresa}</td>
+						<td><IMG SRC= "${contacto.img}"></td>
 						<td>
 						<table>
 							<tr>

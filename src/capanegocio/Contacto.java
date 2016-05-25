@@ -1,8 +1,32 @@
 package capanegocio;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.Iterator;
+
+
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.orm.PersistentException;
 import org.orm.PersistentTransaction;
 
@@ -15,7 +39,7 @@ import taller.servlet.TallerServlet;
  * Se encarga de enviar transacciones a la Base de Datos
  * 
  */
-public class Contacto {
+public class Contacto  {
 	public Contacto() {
 	}
 	
@@ -41,7 +65,43 @@ public class Contacto {
 	
 	private String direccion;
 	
+	private String img;
+	
+	private String bitacora;
+	
 	private Empresa empresa; //cambiar nombre
+
+	
+	
+	/**
+	 * 
+	 * @return obtener dirrecion de la imagen
+	 */
+	
+	public String getImg() {
+		return img;
+	}
+	/**
+	 * 
+	 * @return ingresa la dirrecion de una imagen
+	 */
+	public void setImg(String img) {
+		this.img = img;
+	}
+	/**
+	 * 
+	 * @return obtener la bitacora
+	 */
+	public String getBitacora() {
+		return bitacora;
+	}
+	/**
+	 * 
+	 * @return ingresa el texto a la bitacora
+	 */
+	public void setBitacora(String bitacora) {
+		this.bitacora = bitacora;
+	}
 
 	/**
 	 * 
@@ -281,7 +341,12 @@ public class Contacto {
 					lormContacto.setDireccion(contacto.getDireccion());
 				}catch (NullPointerException e){
 					e.printStackTrace();
-				}	
+				}
+				try{
+					lormContacto.setImg(contacto.getImg());
+				}catch (NullPointerException e){
+					e.printStackTrace();
+				}
 				
 				try{
 					lormContacto.setEmpresaidEmpresa(lormEmpresa);
@@ -290,10 +355,13 @@ public class Contacto {
 				}	
 				
 				msg = "Ingreso Exitoso";
+				System.out.println(msg);
 				orm.ContactoDAO.save(lormContacto);
 				t.commit();
+				System.out.println(msg);
 			}
 			catch (Exception e) {
+				e.printStackTrace();
 				t.rollback();
 			}
 		//} catch (NullPointerException e){
@@ -368,7 +436,13 @@ public class Contacto {
 					lormContacto.setEmpresaidEmpresa(lormEmpresa);
 				}catch (NullPointerException e){
 					e.printStackTrace();
-				}	
+				}
+				try{
+				lormContacto.setImg(contacto.getImg());
+				}catch (NullPointerException e){
+				e.printStackTrace();
+				}
+				
 				
 				orm.ContactoDAO.save(lormContacto);
 				t.commit();
@@ -433,6 +507,7 @@ public class Contacto {
 			contacto.setRegion(contactoOrm.getRegionContacto());
 			contacto.setCiudad(contactoOrm.getCiudadContacto());
 			contacto.setDireccion(contactoOrm.getDireccion());
+			contacto.setImg(contactoOrm.getImg());
 			//contacto.setEmpresa(contactoOrm.getIdEmpresa());
 			
 			 empresaNegocio.setIdEmpresa(empresaOrm.getIdEmpresa());
@@ -495,6 +570,7 @@ public class Contacto {
                 contactoNegocio.setRegion(contactoOrm.getRegionContacto());
                 contactoNegocio.setCiudad(contactoOrm.getCiudadContacto());
                 contactoNegocio.setDireccion(contactoOrm.getDireccion());
+                contactoNegocio.setImg(contactoOrm.getImg());
                 
                 empresaNegocio.setIdEmpresa(empresaOrm.getIdEmpresa());
                 empresaNegocio.setRut(empresaOrm.getRut());
@@ -526,111 +602,7 @@ public class Contacto {
         List<Contacto> listaContacto = new ArrayList<Contacto>();
         List<orm.Contacto> listaContactos = new ArrayList<orm.Contacto>();
         String query = "";
-        /*
-        if (contacto.getRun() != null && !contacto.getRun().trim().equals("")){
-        	query += "Contacto.run='" + contacto.getRun() + "' ";
-        }
-        
-        if ((contacto.getRun() != null && !contacto.getRun().trim().equals("")) 
-        		&& (contacto.getNombre() != null && !contacto.getNombre().trim().equals(""))){
-        	query += "AND ";
-        }
-        
-        if(contacto.getNombre() != null && !contacto.getNombre().trim().equals("")){
-        	query += "Contacto.nombreContacto='" + contacto.getNombre() + "' ";
-        }
-        
-        if((contacto.getRun() != null && !contacto.getRun().trim().equals("") 
-        		|| contacto.getNombre()!=null && !contacto.getNombre().trim().equals("")) 
-        		&& (contacto.getApellido()!=null && contacto.getApellido().trim().equals(""))){
-        	query += "AND ";
-        }
-        
-        if(contacto.getApellido() != null && !contacto.getApellido().trim().equals("")){
-        	query += "Contacto.apellidoContacto='"+contacto.getApellido()+ "' ";
-        }
-        //Probar desde aca
-        if((contacto.getRun() != null && !contacto.getRun().trim().equals("") 
-        		|| contacto.getNombre() != null && !contacto.getNombre().trim().equals("") 
-        		|| contacto.getApellido() != null && !contacto.getApellido().trim().equals("")) 
-        		&& (contacto.getMail() != null && !contacto.getMail().trim().equals(""))){
-        	query += "AND ";
-        }
-        
-        if(contacto.getMail()!=null && !contacto.getMail().trim().equals("")){
-        	query += "Contacto.mailContacto='" + contacto.getMail() + "' ";
-        }
-        //Telefono
-        if((contacto.getRun() != null && !contacto.getRun().trim().equals("")
-        		|| contacto.getNombre() != null && !contacto.getNombre().trim().equals("")
-        		|| contacto.getApellido() != null && !contacto.getApellido().trim().equals("")
-        		|| contacto.getMail() != null && !contacto.getMail().trim().equals(""))
-        		&& (contacto.getTelefono() != null && !contacto.getTelefono().trim().equals(""))){
-        	query += "AND ";
-        }
-        
-        if(contacto.getTelefono() != null && !contacto.getTelefono().trim().equals("")){
-        	query += "Contacto.telefonoContacto='" + contacto.getTelefono() + "' ";
-        }
-        //pais
-        if((contacto.getRun() != null && !contacto.getRun().trim().equals("") 
-        		|| contacto.getNombre() != null && !contacto.getNombre().trim().equals("")
-        		|| contacto.getApellido() != null && !contacto.getApellido().trim().equals("")
-        		|| contacto.getMail() != null && !contacto.getMail().trim().equals("")
-        		|| contacto.getTelefono() != null && !contacto.getTelefono().trim().equals("")) 
-        		&& (contacto.getPais() != null && !contacto.getPais().trim().equals(""))){
-        	query += "AND ";
-        }
-        
-        if(contacto.getPais() != null && !contacto.getPais().trim().equals("")){
-        	query += "Contacto.paisContacto='" + contacto.getPais() + "' ";
-        }
-        //Pais
-        if((contacto.getRun() != null && !contacto.getRun().trim().equals("") 
-        		|| contacto.getNombre() != null && !contacto.getNombre().trim().equals("")
-        		|| contacto.getApellido() != null && !contacto.getApellido().trim().equals("")
-        		|| contacto.getMail() != null && !contacto.getMail().trim().equals("")
-        		|| contacto.getTelefono() != null && !contacto.getTelefono().trim().equals("") 
-        		|| contacto.getPais() != null && !contacto.getPais().trim().equals(""))
-        		&& (contacto.getRegion() != null && !contacto.getRegion().trim().equals(""))) {
-        	query += "AND ";
-        }
-        
-        if(contacto.getRegion() != null && !contacto.getRegion().trim().equals("")){
-        	query += "Contacto.regionContacto='" + contacto.getRegion() + "' ";
-        }
-        //ciudad
-        if((contacto.getRun() != null && !contacto.getRun().trim().equals("") 
-        		|| contacto.getNombre() != null && !contacto.getNombre().trim().equals("")
-        		|| contacto.getApellido() != null && !contacto.getApellido().trim().equals("")
-        		|| contacto.getMail() != null && !contacto.getMail().trim().equals("")
-        		|| contacto.getTelefono() != null && !contacto.getTelefono().trim().equals("") 
-        		|| contacto.getPais() != null && !contacto.getPais().trim().equals("")
-        		|| contacto.getRegion() != null && !contacto.getRegion().trim().equals(""))
-        		&& (contacto.getCiudad() != null && !contacto.getCiudad().trim().equals(""))) {
-        	query += "AND ";
-        }
-        
-        if(contacto.getCiudad() != null && !contacto.getCiudad().trim().equals("")){
-        	query += "Contacto.ciudadContacto='" + contacto.getCiudad() + "' ";
-        }
-        //direccion
-        if((contacto.getRun() != null && !contacto.getRun().trim().equals("") 
-        		|| contacto.getNombre() != null && !contacto.getNombre().trim().equals("")
-        		|| contacto.getApellido() != null && !contacto.getApellido().trim().equals("")
-        		|| contacto.getMail() != null && !contacto.getMail().trim().equals("")
-        		|| contacto.getTelefono() != null && !contacto.getTelefono().trim().equals("") 
-        		|| contacto.getPais() != null && !contacto.getPais().trim().equals("")
-        		|| contacto.getRegion() != null && !contacto.getRegion().trim().equals("")
-        		|| (contacto.getCiudad() != null && !contacto.getCiudad().trim().equals(""))
-        		&& contacto.getDireccion() != null && !contacto.getDireccion().trim().equals(""))){
-        	query += "AND ";
-        }
-        
-        if(contacto.getDireccion() != null && !contacto.getDireccion().trim().equals("")){
-        	query += "Contacto.direccion='" + contacto.getDireccion() + "' ";
-        }
-        */
+       
         
         if(contacto.getRun()!= null && !contacto.getRun().trim().equals("")){
 			query += "Contacto.run='"+contacto.getRun()+"' ";
@@ -767,6 +739,7 @@ public class Contacto {
                 contactoNegocio.setRegion(contactoOrm.getRegionContacto());
                 contactoNegocio.setCiudad(contactoOrm.getCiudadContacto());
                 contactoNegocio.setDireccion(contactoOrm.getDireccion());
+                contactoNegocio.setImg(contactoOrm.getImg());
                 
                 contactoNegocio.setEmpresa(empresaBuscar);
                 
@@ -777,3 +750,5 @@ public class Contacto {
     }
 	
 }
+
+

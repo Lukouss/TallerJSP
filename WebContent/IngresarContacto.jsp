@@ -14,6 +14,7 @@
     <script src="//oss.maxcdn.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js"></script>
      
     <script type="text/javascript" src="./js/validador.js"></script>
+    <script type="text/javascript" src="js/imagen.js"></script>
     
     <jsp:include page="Menu.jsp"></jsp:include>
     
@@ -23,7 +24,7 @@
 	<div class="jumbotron">
 		<div class="container">
 			<h3>Ingresar Contacto</h3>
-			<form action="TallerServlet" id="TallerServlet" method="post" class="form-horizontal mitad">
+			<form action="TallerServlet" id="TallerServlet" method="post" class="form-horizontal mitad" >
 			
 			<div class="form-group">
 				<label class="col-lg-3 control-label" placeholder="formato 11.111.111-1">Run</label>
@@ -52,7 +53,7 @@
 			<div class="form-group">
 				<label class="col-lg-3 control-label">Mail</label>
 				<div class="col-lg-3">
-					<input type="text" class="form-control" name="mail" required>
+					<input type="text" class="form-control" name="email" required>
 					<br>
 				</div>
 			</div>
@@ -117,7 +118,15 @@
 					-->
 				</div>
 			</div>
-			
+			<div class="form-group">
+	  			<label for="foto">Foto</label>
+	  			<input id="inputImagen" name="inputImagen" type="file" multiple accept='imagen/*' onchange="encodeImage();" />	  			
+	  		</div>
+	  		<div class="form-group">
+            	<textarea id="textArea" name="textArea" class="form-control textbox" style="display:none;"></textarea>
+        	</div>
+       
+        	<div class="form-group" id="imgContainer"></div>
 			
 			
 			<div class="form-group">
